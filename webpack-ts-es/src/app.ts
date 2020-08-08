@@ -1,10 +1,11 @@
-import {PublicKey, InitialData, SDK} from './index.d'
+import {PublicKey, InitialData, SDK} from '@/index.d'
 
 class PAYSDK {
   // 全局 SDK 对象
   // private sdk!: SDK
   private publicKey: PublicKey
   private initialData: InitialData
+  this: any
 
   constructor(publicKey: PublicKey, initialData: InitialData) {
     this.publicKey = publicKey

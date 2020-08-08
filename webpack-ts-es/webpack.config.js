@@ -2,7 +2,6 @@ const {merge} = require('webpack-merge')
 const productionConfig = require('./webpack.prod.conf')
 const developmentConfig = require('./webpack.dev.config')
 
-
 const baseConfig = {
   module: {
     rules: [
@@ -10,11 +9,11 @@ const baseConfig = {
         test: /\.(js|ts|tsx)$/,
         exclude: /(node_modules)/,
         use: {
-          loader: 'babel-loader'
-        }
-      }
-    ]
-  }
+          loader: 'babel-loader',
+        },
+      },
+    ],
+  },
 }
 
 module.exports = env => {

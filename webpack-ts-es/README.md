@@ -26,6 +26,8 @@ yarn add babel-loader @babel/core @babel/runtime @babel/preset-env @babel/preset
 ```
 
 #### eslint规范
+(参考eslint规范)[https://segmentfault.com/a/1190000019661168]
+(参考tsconfig.json规范)[https://segmentfault.com/a/1190000021749847]
 * eslint // ESLint的核心代码
 * @typescript-eslint/parser // ESLint的解析器，用于解析typescript，从而检查和规范Typescript代码
 * @typescript-eslint/eslint-plugin // 这是一个ESLint插件，包含了各类定义好的检测Typescript代码的规范
@@ -34,6 +36,15 @@ yarn add babel-loader @babel/core @babel/runtime @babel/preset-env @babel/preset
 * eslint-plugin-prettier // 将prettier作为ESLint规范来使用
 ```
 yarn add eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin prettier eslint-config-prettier eslint-plugin-prettier -D
+```
+
+#### commit校验
+* husky
+* lint-staged
+* commitlint
+* @commitlint/config-conventional
+```
+yarn add husky lint-staged commitlint @commitlint/config-conventional -D
 ```
 
 ### package.json
