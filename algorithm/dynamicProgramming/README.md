@@ -24,4 +24,4 @@
 0<N,M<300
 每个礼物的体积小于100
 ```
-[cowReceivingGifts.ts](sss)
+[cowReceivingGifts.ts](https://github.com/DIVINER-onlys/blog/blob/master/algorithm/dynamicProgramming/cowReceivingGifts.ts)
