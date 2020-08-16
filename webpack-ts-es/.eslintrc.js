@@ -19,7 +19,7 @@ module.exports = {
     },
   },
   rules: {
-    '@typescript-eslints/no-var-requires': 0,
+    '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/no-empty-function': 0,
     'prettier/prettier': [

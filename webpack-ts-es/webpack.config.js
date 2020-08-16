@@ -1,6 +1,7 @@
 const {merge} = require('webpack-merge')
 const productionConfig = require('./webpack.prod.conf')
 const developmentConfig = require('./webpack.dev.config')
+const path = require('path')
 
 const baseConfig = {
   module: {
@@ -13,6 +14,12 @@ const baseConfig = {
         },
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.tsx', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
 }
 

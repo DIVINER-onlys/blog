@@ -16,13 +16,15 @@ yarn add webpack-merge -D
 ```
 
 #### 编译 /\.(js|ts|tsx)$/
-* babel-loader
-* @babel/core
-<!-- * @babel/runtime
-* @babel/preset-env -->
-* @babel/preset-typescript // 解决.d.ts引入问题
+* babel-loader // 指明babel应该编译哪些文件，但并没有指明编译成什么样，需要结合其他插件支持
+* @babel/core // babel的核心功能库
+* @babel/preset-env // 对我们所使用的并且目标浏览器中缺少的功能进行代码转换和加载polyfill，将es6转成es5
+* @babel/runtime // 引入helper code(辅助函数),解决不转换新API的问题，引入各个浏览器需要的polyfill，且不会像babel-polyfill那样污染全局环境
+* @babel/plugin-transform-runtime // 开启对Babel注入的helper code（辅助函数）的复用，以节省代码体积
+* @babel/preset-typescript // 转换Typescript代码，解决.d.ts引入问题
+* @babel/plugin-transform-react-jsx // 编译转换JSX
 ```
-yarn add babel-loader @babel/core @babel/runtime @babel/preset-env @babel/preset-typescript -D
+yarn add babel-loader @babel/core @babel/runtime @babel/plugin-transform-runtime @babel/preset-env @babel/preset-typescript @babel/plugin-transform-react-jsx -D
 ```
 
 #### eslint规范
