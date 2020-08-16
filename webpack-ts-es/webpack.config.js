@@ -2,6 +2,7 @@ const {merge} = require('webpack-merge')
 const productionConfig = require('./webpack.prod.conf')
 const developmentConfig = require('./webpack.dev.config')
 const path = require('path')
+const webpack = require('webpack')
 
 const baseConfig = {
   module: {
@@ -21,6 +22,11 @@ const baseConfig = {
       '@': path.resolve(__dirname, './src'),
     },
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      h: ['dom-chef', 'h'],
+    }),
+  ],
 }
 
 module.exports = env => {

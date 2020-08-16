@@ -1,4 +1,4 @@
-define(function() { return /******/ (function(modules) { // webpackBootstrap
+define("webpack_ts_es", [], function() { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -2965,6 +2965,29 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/string-trim-forced.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/internals/string-trim-forced.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var whitespaces = __webpack_require__(/*! ../internals/whitespaces */ "./node_modules/core-js/internals/whitespaces.js");
+
+var non = '\u200B\u0085\u180E';
+
+// check that a method works with the correct list
+// of whitespaces and has a correct name
+module.exports = function (METHOD_NAME) {
+  return fails(function () {
+    return !!whitespaces[METHOD_NAME]() || non[METHOD_NAME]() != non || whitespaces[METHOD_NAME].name !== METHOD_NAME;
+  });
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/string-trim.js":
 /*!*******************************************************!*\
   !*** ./node_modules/core-js/internals/string-trim.js ***!
@@ -3355,6 +3378,78 @@ module.exports = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es.array.concat.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.concat.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var isArray = __webpack_require__(/*! ../internals/is-array */ "./node_modules/core-js/internals/is-array.js");
+var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
+var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+var createProperty = __webpack_require__(/*! ../internals/create-property */ "./node_modules/core-js/internals/create-property.js");
+var arraySpeciesCreate = __webpack_require__(/*! ../internals/array-species-create */ "./node_modules/core-js/internals/array-species-create.js");
+var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var V8_VERSION = __webpack_require__(/*! ../internals/engine-v8-version */ "./node_modules/core-js/internals/engine-v8-version.js");
+
+var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
+var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+
+// We can't use this feature detection in V8 since it causes
+// deoptimization and serious performance degradation
+// https://github.com/zloirock/core-js/issues/679
+var IS_CONCAT_SPREADABLE_SUPPORT = V8_VERSION >= 51 || !fails(function () {
+  var array = [];
+  array[IS_CONCAT_SPREADABLE] = false;
+  return array.concat()[0] !== array;
+});
+
+var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
+
+var isConcatSpreadable = function (O) {
+  if (!isObject(O)) return false;
+  var spreadable = O[IS_CONCAT_SPREADABLE];
+  return spreadable !== undefined ? !!spreadable : isArray(O);
+};
+
+var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+
+// `Array.prototype.concat` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.concat
+// with adding support of @@isConcatSpreadable and @@species
+$({ target: 'Array', proto: true, forced: FORCED }, {
+  concat: function concat(arg) { // eslint-disable-line no-unused-vars
+    var O = toObject(this);
+    var A = arraySpeciesCreate(O, 0);
+    var n = 0;
+    var i, k, length, len, E;
+    for (i = -1, length = arguments.length; i < length; i++) {
+      E = i === -1 ? O : arguments[i];
+      if (isConcatSpreadable(E)) {
+        len = toLength(E.length);
+        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
+      } else {
+        if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        createProperty(A, n++, E);
+      }
+    }
+    A.length = n;
+    return A;
+  }
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es.array.filter.js":
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.filter.js ***!
@@ -3430,6 +3525,67 @@ $({ target: 'Array', proto: true, forced: String(test) === String(test.reverse()
     // eslint-disable-next-line no-self-assign
     if (isArray(this)) this.length = this.length;
     return nativeReverse.call(this);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.array.slice.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.slice.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
+var isArray = __webpack_require__(/*! ../internals/is-array */ "./node_modules/core-js/internals/is-array.js");
+var toAbsoluteIndex = __webpack_require__(/*! ../internals/to-absolute-index */ "./node_modules/core-js/internals/to-absolute-index.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+var toIndexedObject = __webpack_require__(/*! ../internals/to-indexed-object */ "./node_modules/core-js/internals/to-indexed-object.js");
+var createProperty = __webpack_require__(/*! ../internals/create-property */ "./node_modules/core-js/internals/create-property.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
+var arrayMethodUsesToLength = __webpack_require__(/*! ../internals/array-method-uses-to-length */ "./node_modules/core-js/internals/array-method-uses-to-length.js");
+
+var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('slice');
+var USES_TO_LENGTH = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0, 1: 2 });
+
+var SPECIES = wellKnownSymbol('species');
+var nativeSlice = [].slice;
+var max = Math.max;
+
+// `Array.prototype.slice` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.slice
+// fallback for not array-like ES3 strings and DOM objects
+$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+  slice: function slice(start, end) {
+    var O = toIndexedObject(this);
+    var length = toLength(O.length);
+    var k = toAbsoluteIndex(start, length);
+    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
+    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+    var Constructor, result, n;
+    if (isArray(O)) {
+      Constructor = O.constructor;
+      // cross-realm fallback
+      if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
+        Constructor = undefined;
+      } else if (isObject(Constructor)) {
+        Constructor = Constructor[SPECIES];
+        if (Constructor === null) Constructor = undefined;
+      }
+      if (Constructor === Array || Constructor === undefined) {
+        return nativeSlice.call(O, k, fin);
+      }
+    }
+    result = new (Constructor === undefined ? Array : Constructor)(max(fin - k, 0));
+    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
+    result.length = n;
+    return result;
   }
 });
 
@@ -4435,6 +4591,30 @@ fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es.string.trim.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.string.trim.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var $trim = __webpack_require__(/*! ../internals/string-trim */ "./node_modules/core-js/internals/string-trim.js").trim;
+var forcedStringTrimMethod = __webpack_require__(/*! ../internals/string-trim-forced */ "./node_modules/core-js/internals/string-trim-forced.js");
+
+// `String.prototype.trim` method
+// https://tc39.github.io/ecma262/#sec-string.prototype.trim
+$({ target: 'String', proto: true, forced: forcedStringTrimMethod('trim') }, {
+  trim: function trim() {
+    return $trim(this);
+  }
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es.symbol.js":
 /*!***************************************************!*\
   !*** ./node_modules/core-js/modules/es.symbol.js ***!
@@ -4780,6 +4960,119 @@ for (var COLLECTION_NAME in DOMIterables) {
     CollectionPrototype.forEach = forEach;
   }
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/dom-chef/index.js":
+/*!****************************************!*\
+  !*** ./node_modules/dom-chef/index.js ***!
+  \****************************************/
+/*! exports provided: h, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return h; });
+/* harmony import */ var svg_tag_names__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! svg-tag-names */ "./node_modules/svg-tag-names/index.json");
+var svg_tag_names__WEBPACK_IMPORTED_MODULE_0___namespace = /*#__PURE__*/__webpack_require__.t(/*! svg-tag-names */ "./node_modules/svg-tag-names/index.json", 1);
+
+const svgTags = new Set(svg_tag_names__WEBPACK_IMPORTED_MODULE_0__);
+svgTags.delete('a');
+svgTags.delete('audio');
+svgTags.delete('canvas');
+svgTags.delete('iframe');
+svgTags.delete('script');
+svgTags.delete('video');
+// Copied from Preact
+const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
+const isFragment = (type) => {
+    return type === DocumentFragment;
+};
+const setCSSProps = (element, style) => {
+    for (let [name, value] of Object.entries(style)) {
+        if (typeof value === 'number' && !IS_NON_DIMENSIONAL.test(name)) {
+            value = `${value}px`;
+        }
+        element.style[name] = value;
+    }
+};
+const create = (type) => {
+    if (typeof type === 'string') {
+        if (svgTags.has(type)) {
+            return document.createElementNS('http://www.w3.org/2000/svg', type);
+        }
+        return document.createElement(type);
+    }
+    if (isFragment(type)) {
+        return document.createDocumentFragment();
+    }
+    return type(type.defaultProps);
+};
+const setAttribute = (element, name, value) => {
+    if (value === undefined || value === null) {
+        return;
+    }
+    // Naive support for xlink namespace
+    // Full list: https://github.com/facebook/react/blob/1843f87/src/renderers/dom/shared/SVGDOMPropertyConfig.js#L258-L264
+    if (/^xlink[AHRST]/.test(name)) {
+        element.setAttributeNS('http://www.w3.org/1999/xlink', name.replace('xlink', 'xlink:').toLowerCase(), value);
+    }
+    else {
+        element.setAttribute(name, value);
+    }
+};
+const addChildren = (parent, children) => {
+    for (const child of children) {
+        if (child instanceof Node) {
+            parent.appendChild(child);
+        }
+        else if (Array.isArray(child)) {
+            addChildren(parent, child);
+        }
+        else if (typeof child !== 'boolean' && typeof child !== 'undefined' && child !== null) {
+            parent.appendChild(document.createTextNode(child));
+        }
+    }
+};
+const h = (type, attributes, ...children) => {
+    var _a;
+    const element = create(type);
+    addChildren(element, children);
+    if (element instanceof DocumentFragment || !attributes) {
+        return element;
+    }
+    // Set attributes
+    for (let [name, value] of Object.entries(attributes)) {
+        if (name === 'htmlFor') {
+            name = 'for';
+        }
+        if (name === 'class' || name === 'className') {
+            const existingClassname = (_a = element.getAttribute('class')) !== null && _a !== void 0 ? _a : '';
+            setAttribute(element, 'class', (existingClassname + ' ' + String(value)).trim());
+        }
+        else if (name === 'style') {
+            setCSSProps(element, value);
+        }
+        else if (name.startsWith('on')) {
+            const eventName = name.slice(2).toLowerCase();
+            element.addEventListener(eventName, value);
+        }
+        else if (name === 'dangerouslySetInnerHTML' && '__html' in value) {
+            element.innerHTML = value.__html;
+        }
+        else if (name !== 'key' && value !== false) {
+            setAttribute(element, name, value === true ? '' : value);
+        }
+    }
+    return element;
+};
+// Improve TypeScript support for DocumentFragment
+// https://github.com/Microsoft/TypeScript/issues/20469
+/* harmony default export */ __webpack_exports__["default"] = ({
+    createElement: h,
+    Fragment: typeof DocumentFragment === 'function' ? DocumentFragment : () => { }
+});
 
 
 /***/ }),
@@ -5869,6 +6162,17 @@ try {
 
 /***/ }),
 
+/***/ "./node_modules/svg-tag-names/index.json":
+/*!***********************************************!*\
+  !*** ./node_modules/svg-tag-names/index.json ***!
+  \***********************************************/
+/*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("[\"a\",\"altGlyph\",\"altGlyphDef\",\"altGlyphItem\",\"animate\",\"animateColor\",\"animateMotion\",\"animateTransform\",\"animation\",\"audio\",\"canvas\",\"circle\",\"clipPath\",\"color-profile\",\"cursor\",\"defs\",\"desc\",\"discard\",\"ellipse\",\"feBlend\",\"feColorMatrix\",\"feComponentTransfer\",\"feComposite\",\"feConvolveMatrix\",\"feDiffuseLighting\",\"feDisplacementMap\",\"feDistantLight\",\"feDropShadow\",\"feFlood\",\"feFuncA\",\"feFuncB\",\"feFuncG\",\"feFuncR\",\"feGaussianBlur\",\"feImage\",\"feMerge\",\"feMergeNode\",\"feMorphology\",\"feOffset\",\"fePointLight\",\"feSpecularLighting\",\"feSpotLight\",\"feTile\",\"feTurbulence\",\"filter\",\"font\",\"font-face\",\"font-face-format\",\"font-face-name\",\"font-face-src\",\"font-face-uri\",\"foreignObject\",\"g\",\"glyph\",\"glyphRef\",\"handler\",\"hkern\",\"iframe\",\"image\",\"line\",\"linearGradient\",\"listener\",\"marker\",\"mask\",\"metadata\",\"missing-glyph\",\"mpath\",\"path\",\"pattern\",\"polygon\",\"polyline\",\"prefetch\",\"radialGradient\",\"rect\",\"script\",\"set\",\"solidColor\",\"stop\",\"style\",\"svg\",\"switch\",\"symbol\",\"tbreak\",\"text\",\"textArea\",\"textPath\",\"title\",\"tref\",\"tspan\",\"unknown\",\"use\",\"video\",\"view\",\"vkern\"]");
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -6108,11 +6412,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/getPrototypeOf.js");
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _ChannelBaseClass__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../ChannelBaseClass */ "./src/channel/ChannelBaseClass.ts");
-/* harmony import */ var loadjs__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! loadjs */ "./node_modules/loadjs/dist/loadjs.umd.js");
-/* harmony import */ var loadjs__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(loadjs__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../util */ "./src/util/index.ts");
-/* harmony import */ var _styleObject__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./styleObject */ "./src/channel/ebanx/styleObject.ts");
+/* harmony import */ var _template_default_template__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./template/default/template */ "./src/channel/ebanx/template/default/template.tsx");
+/* harmony import */ var _ChannelBaseClass__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../ChannelBaseClass */ "./src/channel/ChannelBaseClass.ts");
+/* harmony import */ var loadjs__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! loadjs */ "./node_modules/loadjs/dist/loadjs.umd.js");
+/* harmony import */ var loadjs__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(loadjs__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../util */ "./src/util/index.ts");
+/* harmony import */ var _styleObject__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./styleObject */ "./src/channel/ebanx/styleObject.ts");
 
 
 
@@ -6131,6 +6436,7 @@ __webpack_require__.r(__webpack_exports__);
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_13___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_12___default()(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 
 
 
@@ -6177,7 +6483,7 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
 
       // sdk 加载数据上报
       var lasttime = new Date().getTime();
-      loadjs__WEBPACK_IMPORTED_MODULE_15___default()(["https://js.ebanx.com/assets/songbird/songbird-".concat((_this$initialData$env = (_this$initialData = this.initialData) === null || _this$initialData === void 0 ? void 0 : _this$initialData.env) !== null && _this$initialData$env !== void 0 ? _this$initialData$env : 'dev', ".js"), 'https://js.ebanx.com/ebanx-libjs-latest.min.js'], function () {
+      loadjs__WEBPACK_IMPORTED_MODULE_16___default()(["https://js.ebanx.com/assets/songbird/songbird-".concat((_this$initialData$env = (_this$initialData = this.initialData) === null || _this$initialData === void 0 ? void 0 : _this$initialData.env) !== null && _this$initialData$env !== void 0 ? _this$initialData$env : 'dev', ".js"), 'https://js.ebanx.com/ebanx-libjs-latest.min.js'], function () {
         var _this2$initialData, _this2$initialData2, _this2$initialData3, _this2$initialData3$r;
 
         console.log('success', EBANX);
@@ -6193,34 +6499,32 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
   }, {
     key: "renderHtml",
     value: function renderHtml() {
-      var _this$initialData2;
+      var _this$initialData2, _this$initialData3, _this$initialData4, _this$initialData5, _this$initialData6, _this$initialData6$fi;
 
-      var styleOption = Object(_styleObject__WEBPACK_IMPORTED_MODULE_17__["default"])((_this$initialData2 = this.initialData) === null || _this$initialData2 === void 0 ? void 0 : _this$initialData2.styleOption); // this.renderToDom(
-      //   EbanxTemplate({
-      //     submit: this.submit.bind(this),
-      //     changeUserName: this.changeUserName.bind(this),
-      //     changeCardNumber: this.changeCardNumber.bind(this),
-      //     changeExpiration: this.changeExpiration.bind(this),
-      //     changeCVV: this.changeCVV.bind(this),
-      //     label: this.initialData?.label,
-      //     placeholder: this.initialData?.placeholder,
-      //     btnText: this.initialData?.btnText,
-      //     styleOption,
-      //     userName: this.initialData?.fieldData?.userName,
-      //   }),
-      //   this.initialData.domId
-      // )
+      var styleOption = Object(_styleObject__WEBPACK_IMPORTED_MODULE_18__["default"])((_this$initialData2 = this.initialData) === null || _this$initialData2 === void 0 ? void 0 : _this$initialData2.styleOption);
+      this.renderToDom(Object(_template_default_template__WEBPACK_IMPORTED_MODULE_14__["default"])({
+        submit: this.submit.bind(this),
+        changeUserName: this.changeUserName.bind(this),
+        changeCardNumber: this.changeCardNumber.bind(this),
+        changeExpiration: this.changeExpiration.bind(this),
+        changeCVV: this.changeCVV.bind(this),
+        label: (_this$initialData3 = this.initialData) === null || _this$initialData3 === void 0 ? void 0 : _this$initialData3.label,
+        placeholder: (_this$initialData4 = this.initialData) === null || _this$initialData4 === void 0 ? void 0 : _this$initialData4.placeholder,
+        btnText: (_this$initialData5 = this.initialData) === null || _this$initialData5 === void 0 ? void 0 : _this$initialData5.btnText,
+        styleOption: styleOption,
+        userName: (_this$initialData6 = this.initialData) === null || _this$initialData6 === void 0 ? void 0 : (_this$initialData6$fi = _this$initialData6.fieldData) === null || _this$initialData6$fi === void 0 ? void 0 : _this$initialData6$fi.userName
+      }), this.initialData.domId);
     } // 表单修改回调
 
   }, {
     key: "fieldOnChange",
     value: function fieldOnChange(fieldParams, fieldType) {
-      var _this$initialData4, _this$initialData4$fi, _this$initialData5, _this$initialData5$fi;
+      var _this$initialData8, _this$initialData8$fi, _this$initialData9, _this$initialData9$fi;
 
       if (!fieldParams.message) {
-        var _this$initialData3, _this$initialData3$fi;
+        var _this$initialData7, _this$initialData7$fi;
 
-        if (this.userNameErrorTips && !((_this$initialData3 = this.initialData) === null || _this$initialData3 === void 0 ? void 0 : (_this$initialData3$fi = _this$initialData3.fieldData) === null || _this$initialData3$fi === void 0 ? void 0 : _this$initialData3$fi.userName)) {
+        if (this.userNameErrorTips && !((_this$initialData7 = this.initialData) === null || _this$initialData7 === void 0 ? void 0 : (_this$initialData7$fi = _this$initialData7.fieldData) === null || _this$initialData7$fi === void 0 ? void 0 : _this$initialData7$fi.userName)) {
           fieldParams.message = this.userNameErrorTips;
           fieldParams.param = 'username';
         }
@@ -6245,36 +6549,36 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
         document.getElementById('ebanx_error_tips').innerText = fieldParams.message;
       }
 
-      fieldType === 'onblur' && ((_this$initialData4 = this.initialData) === null || _this$initialData4 === void 0 ? void 0 : (_this$initialData4$fi = _this$initialData4.fieldOnBlur) === null || _this$initialData4$fi === void 0 ? void 0 : _this$initialData4$fi.call(_this$initialData4, fieldParams));
-      fieldType === 'onkeyup' && ((_this$initialData5 = this.initialData) === null || _this$initialData5 === void 0 ? void 0 : (_this$initialData5$fi = _this$initialData5.fieldOnChange) === null || _this$initialData5$fi === void 0 ? void 0 : _this$initialData5$fi.call(_this$initialData5, fieldParams));
+      fieldType === 'onblur' && ((_this$initialData8 = this.initialData) === null || _this$initialData8 === void 0 ? void 0 : (_this$initialData8$fi = _this$initialData8.fieldOnBlur) === null || _this$initialData8$fi === void 0 ? void 0 : _this$initialData8$fi.call(_this$initialData8, fieldParams));
+      fieldType === 'onkeyup' && ((_this$initialData9 = this.initialData) === null || _this$initialData9 === void 0 ? void 0 : (_this$initialData9$fi = _this$initialData9.fieldOnChange) === null || _this$initialData9$fi === void 0 ? void 0 : _this$initialData9$fi.call(_this$initialData9, fieldParams));
       this.fieldComplete();
     } // 是否完成表单填写
 
   }, {
     key: "fieldComplete",
     value: function fieldComplete() {
-      var _this$initialData6, _this$initialData6$fi;
+      var _this$initialData10, _this$initialData10$f;
 
       var EbanxSubmitBtn = document.getElementById('ebanx_submit_btn');
 
-      if ((((_this$initialData6 = this.initialData) === null || _this$initialData6 === void 0 ? void 0 : (_this$initialData6$fi = _this$initialData6.fieldData) === null || _this$initialData6$fi === void 0 ? void 0 : _this$initialData6$fi.userName) || !this.userNameErrorTips && this.userName) && !this.cardNumberErrorTips && !this.expirationErrorTips && !this.cvvErrorTips && this.cardNumber && this.expiration && this.cvv) {
-        var _this$initialData7, _this$initialData7$st, _this$initialData7$st2, _this$initialData7$st3, _this$initialData8, _this$initialData8$fi;
+      if ((((_this$initialData10 = this.initialData) === null || _this$initialData10 === void 0 ? void 0 : (_this$initialData10$f = _this$initialData10.fieldData) === null || _this$initialData10$f === void 0 ? void 0 : _this$initialData10$f.userName) || !this.userNameErrorTips && this.userName) && !this.cardNumberErrorTips && !this.expirationErrorTips && !this.cvvErrorTips && this.cardNumber && this.expiration && this.cvv) {
+        var _this$initialData11, _this$initialData11$s, _this$initialData11$s2, _this$initialData11$s3, _this$initialData12, _this$initialData12$f;
 
         console.log('表单填写完成');
         EbanxSubmitBtn.removeAttribute('disabled');
-        EbanxSubmitBtn.style.background = ((_this$initialData7 = this.initialData) === null || _this$initialData7 === void 0 ? void 0 : (_this$initialData7$st = _this$initialData7.styleOption) === null || _this$initialData7$st === void 0 ? void 0 : (_this$initialData7$st2 = _this$initialData7$st.componentStyle) === null || _this$initialData7$st2 === void 0 ? void 0 : (_this$initialData7$st3 = _this$initialData7$st2.btnStyle) === null || _this$initialData7$st3 === void 0 ? void 0 : _this$initialData7$st3.normalBackground) || '#ffc102';
-        (_this$initialData8 = this.initialData) === null || _this$initialData8 === void 0 ? void 0 : (_this$initialData8$fi = _this$initialData8.fieldComplete) === null || _this$initialData8$fi === void 0 ? void 0 : _this$initialData8$fi.call(_this$initialData8, {
+        EbanxSubmitBtn.style.background = ((_this$initialData11 = this.initialData) === null || _this$initialData11 === void 0 ? void 0 : (_this$initialData11$s = _this$initialData11.styleOption) === null || _this$initialData11$s === void 0 ? void 0 : (_this$initialData11$s2 = _this$initialData11$s.componentStyle) === null || _this$initialData11$s2 === void 0 ? void 0 : (_this$initialData11$s3 = _this$initialData11$s2.btnStyle) === null || _this$initialData11$s3 === void 0 ? void 0 : _this$initialData11$s3.normalBackground) || '#ffc102';
+        (_this$initialData12 = this.initialData) === null || _this$initialData12 === void 0 ? void 0 : (_this$initialData12$f = _this$initialData12.fieldComplete) === null || _this$initialData12$f === void 0 ? void 0 : _this$initialData12$f.call(_this$initialData12, {
           userName: this.userName,
           cardNumber: this.cardNumber,
           expiration: this.expiration,
           cvv: this.cvv
         });
       } else {
-        var _this$initialData9, _this$initialData9$st, _this$initialData9$st2, _this$initialData9$st3;
+        var _this$initialData13, _this$initialData13$s, _this$initialData13$s2, _this$initialData13$s3;
 
         console.log('表单没填写完成');
         EbanxSubmitBtn.setAttribute('disabled', 'disabled');
-        EbanxSubmitBtn.style.background = ((_this$initialData9 = this.initialData) === null || _this$initialData9 === void 0 ? void 0 : (_this$initialData9$st = _this$initialData9.styleOption) === null || _this$initialData9$st === void 0 ? void 0 : (_this$initialData9$st2 = _this$initialData9$st.componentStyle) === null || _this$initialData9$st2 === void 0 ? void 0 : (_this$initialData9$st3 = _this$initialData9$st2.btnStyle) === null || _this$initialData9$st3 === void 0 ? void 0 : _this$initialData9$st3.disableBackground) || '#dddddd';
+        EbanxSubmitBtn.style.background = ((_this$initialData13 = this.initialData) === null || _this$initialData13 === void 0 ? void 0 : (_this$initialData13$s = _this$initialData13.styleOption) === null || _this$initialData13$s === void 0 ? void 0 : (_this$initialData13$s2 = _this$initialData13$s.componentStyle) === null || _this$initialData13$s2 === void 0 ? void 0 : (_this$initialData13$s3 = _this$initialData13$s2.btnStyle) === null || _this$initialData13$s3 === void 0 ? void 0 : _this$initialData13$s3.disableBackground) || '#dddddd';
       }
     }
   }, {
@@ -6282,10 +6586,10 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
     value: function changeUserName(e, fieldType) {
       this.userName = e.target.value;
 
-      if (!Object(_util__WEBPACK_IMPORTED_MODULE_16__["checkEbanxUserName"])(this.userName)) {
-        var _this$initialData10, _this$initialData10$e;
+      if (!Object(_util__WEBPACK_IMPORTED_MODULE_17__["checkEbanxUserName"])(this.userName)) {
+        var _this$initialData14, _this$initialData14$e;
 
-        this.userNameErrorTips = ((_this$initialData10 = this.initialData) === null || _this$initialData10 === void 0 ? void 0 : (_this$initialData10$e = _this$initialData10.errorTips) === null || _this$initialData10$e === void 0 ? void 0 : _this$initialData10$e.userNameErrorTips) || 'The username is incorrect.';
+        this.userNameErrorTips = ((_this$initialData14 = this.initialData) === null || _this$initialData14 === void 0 ? void 0 : (_this$initialData14$e = _this$initialData14.errorTips) === null || _this$initialData14$e === void 0 ? void 0 : _this$initialData14$e.userNameErrorTips) || 'The username is incorrect.';
       } else {
         this.userNameErrorTips = '';
       }
@@ -6299,7 +6603,7 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
     key: "changeCardNumber",
     value: function () {
       var _changeCardNumber = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_8___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default.a.mark(function _callee(e, fieldType, length) {
-        var _this$initialData11, _this$initialData11$e;
+        var _this$initialData15, _this$initialData15$e;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_6___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -6315,8 +6619,8 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
                 return _context.abrupt("return");
 
               case 3:
-                if (!Object(_util__WEBPACK_IMPORTED_MODULE_16__["checkoutCardNumber"])(this.cardNumber)) {
-                  this.cardNumberErrorTips = ((_this$initialData11 = this.initialData) === null || _this$initialData11 === void 0 ? void 0 : (_this$initialData11$e = _this$initialData11.errorTips) === null || _this$initialData11$e === void 0 ? void 0 : _this$initialData11$e.cardNumberErrorTips) || 'The card number is incorrect.';
+                if (!Object(_util__WEBPACK_IMPORTED_MODULE_17__["checkoutCardNumber"])(this.cardNumber)) {
+                  this.cardNumberErrorTips = ((_this$initialData15 = this.initialData) === null || _this$initialData15 === void 0 ? void 0 : (_this$initialData15$e = _this$initialData15.errorTips) === null || _this$initialData15$e === void 0 ? void 0 : _this$initialData15$e.cardNumberErrorTips) || 'The card number is incorrect.';
                 } else {
                   this.cardNumberErrorTips = '';
                 } // const res: {
@@ -6357,10 +6661,10 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
     value: function changeExpiration(e, fieldType) {
       this.expiration = e.target.value;
 
-      if (!Object(_util__WEBPACK_IMPORTED_MODULE_16__["checkEbanxExpiration"])(this.expiration)) {
-        var _this$initialData12, _this$initialData12$e;
+      if (!Object(_util__WEBPACK_IMPORTED_MODULE_17__["checkEbanxExpiration"])(this.expiration)) {
+        var _this$initialData16, _this$initialData16$e;
 
-        this.expirationErrorTips = ((_this$initialData12 = this.initialData) === null || _this$initialData12 === void 0 ? void 0 : (_this$initialData12$e = _this$initialData12.errorTips) === null || _this$initialData12$e === void 0 ? void 0 : _this$initialData12$e.expirationErrorTips) || 'The card’s expiration date is incorrect.';
+        this.expirationErrorTips = ((_this$initialData16 = this.initialData) === null || _this$initialData16 === void 0 ? void 0 : (_this$initialData16$e = _this$initialData16.errorTips) === null || _this$initialData16$e === void 0 ? void 0 : _this$initialData16$e.expirationErrorTips) || 'The card’s expiration date is incorrect.';
       } else {
         this.expirationErrorTips = '';
       }
@@ -6375,10 +6679,10 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
     value: function changeCVV(e, fieldType) {
       this.cvv = e.target.value;
 
-      if (!Object(_util__WEBPACK_IMPORTED_MODULE_16__["checkCVV"])(this.cvv)) {
-        var _this$initialData13, _this$initialData13$e;
+      if (!Object(_util__WEBPACK_IMPORTED_MODULE_17__["checkCVV"])(this.cvv)) {
+        var _this$initialData17, _this$initialData17$e;
 
-        this.cvvErrorTips = ((_this$initialData13 = this.initialData) === null || _this$initialData13 === void 0 ? void 0 : (_this$initialData13$e = _this$initialData13.errorTips) === null || _this$initialData13$e === void 0 ? void 0 : _this$initialData13$e.cvvErrorTips) || 'The card’s security code is incorrect.';
+        this.cvvErrorTips = ((_this$initialData17 = this.initialData) === null || _this$initialData17 === void 0 ? void 0 : (_this$initialData17$e = _this$initialData17.errorTips) === null || _this$initialData17$e === void 0 ? void 0 : _this$initialData17$e.cvvErrorTips) || 'The card’s security code is incorrect.';
       } else {
         this.cvvErrorTips = '';
       }
@@ -6393,8 +6697,8 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
     value: function submit(e) {
       var _document$getElementB,
           _document$getElementB2,
-          _this$initialData14,
-          _this$initialData14$f,
+          _this$initialData18,
+          _this$initialData18$f,
           _this3 = this;
 
       var EbanxSubmitBtn = document.getElementById('ebanx_submit_btn');
@@ -6402,7 +6706,7 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
       EBANX.card.createToken({
         card_number: (_document$getElementB = document.getElementById('ebanx_card_number')) === null || _document$getElementB === void 0 ? void 0 : (_document$getElementB2 = _document$getElementB.value) === null || _document$getElementB2 === void 0 ? void 0 : _document$getElementB2.replace(/\D/g, ''),
         // card_name: (<HTMLInputElement>document.getElementById('ebanx_user_name')).value,
-        card_name: ((_this$initialData14 = this.initialData) === null || _this$initialData14 === void 0 ? void 0 : (_this$initialData14$f = _this$initialData14.fieldData) === null || _this$initialData14$f === void 0 ? void 0 : _this$initialData14$f.userName) || document.getElementById('ebanx_user_name').value,
+        card_name: ((_this$initialData18 = this.initialData) === null || _this$initialData18 === void 0 ? void 0 : (_this$initialData18$f = _this$initialData18.fieldData) === null || _this$initialData18$f === void 0 ? void 0 : _this$initialData18$f.userName) || document.getElementById('ebanx_user_name').value,
         card_due_date: document.getElementById('ebanx_card_due_date').value,
         card_cvv: document.getElementById('ebanx_card_cvv').value
       }, function (ebanxResponse) {
@@ -6473,7 +6777,7 @@ var Ebanx = /*#__PURE__*/function (_ChannelBaseClass) {
   }]);
 
   return Ebanx;
-}(_ChannelBaseClass__WEBPACK_IMPORTED_MODULE_14__["default"]);
+}(_ChannelBaseClass__WEBPACK_IMPORTED_MODULE_15__["default"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Ebanx);
 
@@ -6651,6 +6955,184 @@ var styleObject = function styleObject(styleOption) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (styleObject);
+
+/***/ }),
+
+/***/ "./src/channel/ebanx/template/default/template.tsx":
+/*!*********************************************************!*\
+  !*** ./src/channel/ebanx/template/default/template.tsx ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(h) {/* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.concat */ "./node_modules/core-js/modules/es.array.concat.js");
+/* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.slice */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.string.replace */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.string.trim */ "./node_modules/core-js/modules/es.string.trim.js");
+/* harmony import */ var core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_trim__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+
+var template = function template(props) {
+  var _props$label, _props$styleOption, _props$label$userName, _props$label2, _props$placeholder$us, _props$placeholder, _props$styleOption2, _props$label3, _props$styleOption3, _props$label$cardNumb, _props$label4, _props$placeholder$ca, _props$placeholder2, _props$styleOption4, _props$label5, _props$styleOption5, _props$label$expirati, _props$label6, _props$placeholder$ex, _props$placeholder3, _props$placeholder$ex2, _props$placeholder4, _props$styleOption6, _props$label7, _props$styleOption7, _props$label$cvvLabel, _props$label8, _props$placeholder$cv, _props$placeholder5, _props$styleOption8, _props$styleOption9, _props$btnText;
+
+  return h("div", {
+    className: "ebanx_cover"
+  }, h("div", {
+    dangerouslySetInnerHTML: {
+      __html: "<style>\n        .ebanx_cover * {\n          box-sizing: border-box !important;\n          margin: 0;\n          padding: 0;\n        }\n        .ebanx_cover input::placeholder{\n          color: #999999 !important;\n        }\n        </style>"
+    }
+  }), h("div", {
+    className: "ebanx_payment_form",
+    style: props.styleOption['ebanx_payment_form']
+  }, !props.userName && h("div", {
+    calssName: "ebanx_nameInputStyle_inputWrapperStyle",
+    style: props.styleOption['ebanx_nameInputStyle_inputWrapperStyle']
+  }, (props === null || props === void 0 ? void 0 : (_props$label = props.label) === null || _props$label === void 0 ? void 0 : _props$label.userNameLabel) && h("label", {
+    for: "ebanx_user_name",
+    className: "ebanx_nameInputStyle_labelStyle",
+    style: (_props$styleOption = props.styleOption) === null || _props$styleOption === void 0 ? void 0 : _props$styleOption['ebanx_nameInputStyle_labelStyle']
+  }, (_props$label$userName = props === null || props === void 0 ? void 0 : (_props$label2 = props.label) === null || _props$label2 === void 0 ? void 0 : _props$label2.userNameLabel) !== null && _props$label$userName !== void 0 ? _props$label$userName : 'User Name'), h("input", {
+    placeholder: "".concat((_props$placeholder$us = props === null || props === void 0 ? void 0 : (_props$placeholder = props.placeholder) === null || _props$placeholder === void 0 ? void 0 : _props$placeholder.userNamePlaceholder) !== null && _props$placeholder$us !== void 0 ? _props$placeholder$us : 'User Name'),
+    type: "text",
+    id: "ebanx_user_name",
+    className: "ebanx_nameInputStyle_inputStyle",
+    style: (_props$styleOption2 = props.styleOption) === null || _props$styleOption2 === void 0 ? void 0 : _props$styleOption2['ebanx_nameInputStyle_inputStyle'],
+    onkeyup: function onkeyup(e) {
+      props.changeUserName(e, 'onkeyup');
+    },
+    onblur: function onblur(e) {
+      props.changeUserName(e, 'onblur');
+    }
+  })), h("div", {
+    className: "ebanx_cardInputStyle_inputWrapperStyle",
+    style: props.styleOption['ebanx_cardInputStyle_inputWrapperStyle']
+  }, (props === null || props === void 0 ? void 0 : (_props$label3 = props.label) === null || _props$label3 === void 0 ? void 0 : _props$label3.cardNumberLabel) && h("label", {
+    for: "ebanx_card_number",
+    className: "ebanx_cardInputStyle_labelStyle",
+    style: (_props$styleOption3 = props.styleOption) === null || _props$styleOption3 === void 0 ? void 0 : _props$styleOption3['ebanx_cardInputStyle_labelStyle']
+  }, (_props$label$cardNumb = props === null || props === void 0 ? void 0 : (_props$label4 = props.label) === null || _props$label4 === void 0 ? void 0 : _props$label4.cardNumberLabel) !== null && _props$label$cardNumb !== void 0 ? _props$label$cardNumb : 'Card Number'), h("div", null, h("input", {
+    placeholder: "".concat((_props$placeholder$ca = props === null || props === void 0 ? void 0 : (_props$placeholder2 = props.placeholder) === null || _props$placeholder2 === void 0 ? void 0 : _props$placeholder2.cardNumberPlaceholder) !== null && _props$placeholder$ca !== void 0 ? _props$placeholder$ca : 'Card Number'),
+    type: "text",
+    maxlength: "23",
+    id: "ebanx_card_number",
+    className: "ebanx_cardInputStyle_inputStyle",
+    style: (_props$styleOption4 = props.styleOption) === null || _props$styleOption4 === void 0 ? void 0 : _props$styleOption4['ebanx_cardInputStyle_inputStyle'],
+    oninput: function oninput(e) {
+      var _value, _value$replace, _value$replace$replac, _value$replace$replac2;
+
+      ;
+      e.target.value = (_value = e.target.value) === null || _value === void 0 ? void 0 : (_value$replace = _value.replace(/\D/g, '')) === null || _value$replace === void 0 ? void 0 : (_value$replace$replac = _value$replace.replace(/(\d{4})/g, '$1 ')) === null || _value$replace$replac === void 0 ? void 0 : (_value$replace$replac2 = _value$replace$replac.trim()) === null || _value$replace$replac2 === void 0 ? void 0 : _value$replace$replac2.slice(0, 23);
+    },
+    onkeyup: function onkeyup(e) {
+      var _value2, _value2$replace, _value2$replace$repla, _value2$replace$repla2;
+
+      ;
+      e.target.value = (_value2 = e.target.value) === null || _value2 === void 0 ? void 0 : (_value2$replace = _value2.replace(/\D/g, '')) === null || _value2$replace === void 0 ? void 0 : (_value2$replace$repla = _value2$replace.replace(/(\d{4})/g, '$1 ')) === null || _value2$replace$repla === void 0 ? void 0 : (_value2$replace$repla2 = _value2$replace$repla.trim()) === null || _value2$replace$repla2 === void 0 ? void 0 : _value2$replace$repla2.slice(0, 23);
+      props.changeCardNumber(e, 'onkeyup');
+    },
+    onblur: function onblur(e) {
+      props.changeCardNumber(e, 'onblur');
+    }
+  }))), h("div", {
+    className: "ebanx_flex_style",
+    style: props.styleOption['ebanx_flex_style']
+  }, h("div", {
+    className: "ebanx_expirationInputStyle_inputWrapperStyle",
+    style: props.styleOption['ebanx_expirationInputStyle_inputWrapperStyle']
+  }, (props === null || props === void 0 ? void 0 : (_props$label5 = props.label) === null || _props$label5 === void 0 ? void 0 : _props$label5.expirationLabel) && h("label", {
+    for: "ebanx_card_due_date",
+    className: "ebanx_expirationInputStyle_labelStyle",
+    style: (_props$styleOption5 = props.styleOption) === null || _props$styleOption5 === void 0 ? void 0 : _props$styleOption5['ebanx_expirationInputStyle_labelStyle']
+  }, (_props$label$expirati = props === null || props === void 0 ? void 0 : (_props$label6 = props.label) === null || _props$label6 === void 0 ? void 0 : _props$label6.expirationLabel) !== null && _props$label$expirati !== void 0 ? _props$label$expirati : 'Card Due Date'), h("input", {
+    placeholder: "".concat((_props$placeholder$ex = props === null || props === void 0 ? void 0 : (_props$placeholder3 = props.placeholder) === null || _props$placeholder3 === void 0 ? void 0 : _props$placeholder3.expiryMonthPlaceholder) !== null && _props$placeholder$ex !== void 0 ? _props$placeholder$ex : 'MM', "/").concat((_props$placeholder$ex2 = props === null || props === void 0 ? void 0 : (_props$placeholder4 = props.placeholder) === null || _props$placeholder4 === void 0 ? void 0 : _props$placeholder4.expiryYearPlaceholder) !== null && _props$placeholder$ex2 !== void 0 ? _props$placeholder$ex2 : 'YYYY'),
+    type: "text",
+    id: "ebanx_card_due_date",
+    className: "ebanx_expirationInputStyle_inputStyle",
+    style: (_props$styleOption6 = props.styleOption) === null || _props$styleOption6 === void 0 ? void 0 : _props$styleOption6['ebanx_expirationInputStyle_inputStyle'] // onChange={(e: Event) => {
+    //   console.log('onChange', e.target.value)
+    // }}
+    // oninput={(e: Event) => {
+    //   // e.target.value = e.target.value + '/'
+    //   console.log('oninput', e.target.value)
+    // }}
+    // onpropertychange={(e: Event) => {
+    //   console.log('onpropertychange', e.target.value)
+    // }}
+    ,
+    onblur: function onblur(e) {
+      props.changeExpiration(e, 'onblur');
+    } // onfocus={(e: Event) => {
+    //   console.log('onfocus', e.target.value)
+    // }}
+    ,
+    onkeyup: function onkeyup(e) {
+      var _value3, _value3$replace, _value3$replace$slice;
+
+      ;
+      e.target.value = (_value3 = e.target.value) === null || _value3 === void 0 ? void 0 : (_value3$replace = _value3.replace(/\D/g, '')) === null || _value3$replace === void 0 ? void 0 : (_value3$replace$slice = _value3$replace.slice(0, 6)) === null || _value3$replace$slice === void 0 ? void 0 : _value3$replace$slice.replace(/^(\d{2})\/?(\d{0,})$/, function ($1, $2, $3) {
+        return "".concat($2).concat($3 ? '/' + $3 : $3);
+      });
+      props.changeExpiration(e, 'onkeyup');
+    }
+  })), h("div", {
+    className: "ebanx_cvvInputStyle_inputWrapperStyle",
+    style: props.styleOption['ebanx_cvvInputStyle_inputWrapperStyle']
+  }, (props === null || props === void 0 ? void 0 : (_props$label7 = props.label) === null || _props$label7 === void 0 ? void 0 : _props$label7.cvvLabel) && h("label", {
+    for: "ebanx_card_cvv",
+    className: "ebanx_cvvInputStyle_labelStyle",
+    style: (_props$styleOption7 = props.styleOption) === null || _props$styleOption7 === void 0 ? void 0 : _props$styleOption7['ebanx_cvvInputStyle_labelStyle']
+  }, (_props$label$cvvLabel = props === null || props === void 0 ? void 0 : (_props$label8 = props.label) === null || _props$label8 === void 0 ? void 0 : _props$label8.cvvLabel) !== null && _props$label$cvvLabel !== void 0 ? _props$label$cvvLabel : 'Card Cvv'), h("input", {
+    placeholder: "".concat((_props$placeholder$cv = props === null || props === void 0 ? void 0 : (_props$placeholder5 = props.placeholder) === null || _props$placeholder5 === void 0 ? void 0 : _props$placeholder5.cvvPlaceholder) !== null && _props$placeholder$cv !== void 0 ? _props$placeholder$cv : 'Cvv'),
+    type: "text",
+    maxlength: "4",
+    id: "ebanx_card_cvv",
+    className: "ebanx_cvvInputStyle_inputStyle",
+    style: (_props$styleOption8 = props.styleOption) === null || _props$styleOption8 === void 0 ? void 0 : _props$styleOption8['ebanx_cvvInputStyle_inputStyle'],
+    oninput: function oninput(e) {
+      var _value4, _value4$replace;
+
+      ;
+      e.target.value = (_value4 = e.target.value) === null || _value4 === void 0 ? void 0 : (_value4$replace = _value4.replace(/\D/g, '')) === null || _value4$replace === void 0 ? void 0 : _value4$replace.slice(0, 4);
+    },
+    onkeyup: function onkeyup(e) {
+      var _value5, _value5$replace;
+
+      ;
+      e.target.value = (_value5 = e.target.value) === null || _value5 === void 0 ? void 0 : (_value5$replace = _value5.replace(/\D/g, '')) === null || _value5$replace === void 0 ? void 0 : _value5$replace.slice(0, 4);
+      props.changeCVV(e, 'onkeyup');
+    },
+    onblur: function onblur(e) {
+      props.changeCVV(e, 'onblur');
+    }
+  }))), h("div", {
+    id: "ebanx_error_tips",
+    className: "ebanx_error_tips",
+    style: props.styleOption['ebanx_error_tips']
+  }), (props === null || props === void 0 ? void 0 : props.btnText) && h("button", {
+    type: "submit",
+    id: "ebanx_submit_btn",
+    className: "ebanx_submit_btn",
+    style: (_props$styleOption9 = props.styleOption) === null || _props$styleOption9 === void 0 ? void 0 : _props$styleOption9['ebanx_submit_btn'],
+    disabled: true,
+    onClick: function onClick(e) {
+      props === null || props === void 0 ? void 0 : props.submit(e);
+    }
+  }, (_props$btnText = props === null || props === void 0 ? void 0 : props.btnText) !== null && _props$btnText !== void 0 ? _props$btnText : 'OK')));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (template);
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! dom-chef */ "./node_modules/dom-chef/index.js")["h"]))
 
 /***/ }),
 

@@ -57,21 +57,21 @@ class Ebanx extends ChannelBaseClass {
 
   private renderHtml() {
     const styleOption: JSONObject = styleObject(this.initialData?.styleOption)
-    // this.renderToDom(
-    //   EbanxTemplate({
-    //     submit: this.submit.bind(this),
-    //     changeUserName: this.changeUserName.bind(this),
-    //     changeCardNumber: this.changeCardNumber.bind(this),
-    //     changeExpiration: this.changeExpiration.bind(this),
-    //     changeCVV: this.changeCVV.bind(this),
-    //     label: this.initialData?.label,
-    //     placeholder: this.initialData?.placeholder,
-    //     btnText: this.initialData?.btnText,
-    //     styleOption,
-    //     userName: this.initialData?.fieldData?.userName,
-    //   }),
-    //   this.initialData.domId
-    // )
+    this.renderToDom(
+      EbanxTemplate({
+        submit: this.submit.bind(this),
+        changeUserName: this.changeUserName.bind(this),
+        changeCardNumber: this.changeCardNumber.bind(this),
+        changeExpiration: this.changeExpiration.bind(this),
+        changeCVV: this.changeCVV.bind(this),
+        label: this.initialData?.label,
+        placeholder: this.initialData?.placeholder,
+        btnText: this.initialData?.btnText,
+        styleOption,
+        userName: this.initialData?.fieldData?.userName,
+      }),
+      this.initialData.domId
+    )
   }
 
   // 表单修改回调

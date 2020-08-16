@@ -24,7 +24,13 @@ const plugins = [
     // },
   ],
   // [''],
-  ['@babel/plugin-transform-react-jsx'],
+  [
+    '@babel/plugin-transform-react-jsx',
+    {
+      pragma: 'h',
+      pragmaFrag: 'DocumentFragment',
+    },
+  ],
 ]
 
 module.exports = {presets, plugins}

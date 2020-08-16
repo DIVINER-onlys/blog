@@ -9,7 +9,7 @@ module.exports = {
     libraryTarget: 'amd', // amd和umd模式，umd包含amd和commonJS模式
     path: __dirname + '/dist',
     filename: 'index.js',
-    // library: 'webpack_ts_es',
+    library: 'webpack_ts_es',
   },
   devtool: 'source-map',
 }

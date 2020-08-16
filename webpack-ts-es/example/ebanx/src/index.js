@@ -1,5 +1,5 @@
 import sdk from '../../../dist/index'
-// import sdk from '@efox/pay'
+// import sdk from 'webpack_ts_es'
 
 const publicKey = {
   //   key: '250405304072',

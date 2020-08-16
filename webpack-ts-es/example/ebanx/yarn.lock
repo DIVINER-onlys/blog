@@ -2287,6 +2287,11 @@ loader-utils@^1.2.3, loader-utils@^1.4.0:
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
+loadjs@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/loadjs/-/loadjs-4.2.0.tgz#2a0336376397a6a43edf98c9ec3229ddd5abb6f6"
+  integrity sha512-AgQGZisAlTPbTEzrHPb6q+NYBMD+DP9uvGSIjSUM5uG+0jG15cb8axWpxuOIqrmQjn6scaaH8JwloiP27b2KXA==
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"
@@ -4002,6 +4007,13 @@ webpack@^4.44.1:
     terser-webpack-plugin "^1.4.3"
     watchpack "^1.7.4"
     webpack-sources "^1.4.1"
+
+webpack_ts_es@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/webpack_ts_es/-/webpack_ts_es-1.0.0.tgz#c8daf06e700d01e10d751e8caa4aeeb923959bf2"
+  integrity sha512-Rrj13/37WE/QcVrMY6rwOujaMNE8sPvN7tsWmAyqlj2xE+njEzEWy8XY/rOQImWEu8yLc4t+aMs6mlYuxxzo+A==
+  dependencies:
+    loadjs "^4.2.0"
 
 websocket-driver@0.6.5:
   version "0.6.5"
