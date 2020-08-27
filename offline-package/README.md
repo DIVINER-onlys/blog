@@ -249,3 +249,8 @@ yarn build && node native/index dev
 除了文件完整性校验校验外,url匹配规则
 * 域名匹配得上就加载本地
   * indexRouter匹配得上加载index.html，匹配不上根据路径加载本地资源
+
+#### 源码
+[源码](https://github.com/DIVINER-onlys/blog/blob/master/offline-package/native/index.js)
+
+[github](https://github.com/DIVINER-onlys)
