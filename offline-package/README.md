@@ -3,12 +3,60 @@
 ### 背景
 在现在全球化业务的趋势下，国外的网络环境并不像国内那么的完善，在app内嵌的h5页面加载速度是又有需求，即使我们的域名上了全球cdn，页面的加载也有时候不那么可观，因此，我们需要一种方案来解决页面的首屏加载速度问题，我们的方案就是`离线包方案`，让客户端提前把我们的页面资源缓存到app内
 
-### 前端流程
+### 我们需要做什么
+我们需要做的是把我们的h5的资源，通过定一个校验约定和版本约定，让客户端能按照我们的约定校验资源，加载资源
+
+### 我们做缓存的目的
+访问一个url加载一个页面资源，需要加载
+* `js`
+* `css`
+* `图片、字体资源`
+* `额外引入的polyfill`
+* `接口数据`
+等等资源，我们要做的就是将除去`接口数据`外的其他资源在打开app进入时加载，缓存在本地，在打开url时，直接加载本地资源，节省加载除去`接口数据`外的资源加载时间
+
+### 最终能达到什么效果
+我们先看下在不同网络下，我们`css`和`js`资源的加载时间
+<!-- https://ibb.co/rfmzPGv -->
+* 在4g网络下，我们加载页面的`css`和`js`资源需要的时间,大概需要200-300ms
+![4g网络](https://i.ibb.co/Wp6M9Ws/online.png)
+
+<!-- https://ibb.co/3dy7ZNz -->
+* 在fast3G网络下，我们加载页面的`css`和`js`资源需要的时间,大概需要13-14s
+![fast3G网络](https://i.ibb.co/qjMdQs5/fast3G.png)
+
+<!-- https://ibb.co/gz36zFG -->
+* 在fast3G网络下，我们加载页面的`css`和`js`资源需要的时间,大概需要40-50s
+![slow3G网络](https://i.ibb.co/4P7JPgc/slow3G.png)
+
+
+如果在网络正常良好的情况下，我们加载css和js资源的时间处于可以接受的状态，但如果网络状态不乐观时，要显示首屏这个加载时间就无法接受了（而且还没算上图片资源加载时间），而海外网络的不确定性，所以缓存策略可以说就很有必要了
+
+
+### dist包主要目录
+``` 
+dist
+  |
+  |--static
+  |   |--css
+  |   |--js
+  |   |--assets
+  |--index.html
+  |--polyfill
+  |--manifest.json
+  |--manifest-config.json
+  |--efox-pay-package.zip
+  |--zip-hash.json
+```
+
+
+### 如何实现
+#### 前端流程
 ![前端流程](http://pushmiddle.bs2dl.yy.com/nativea.png)
 
-#### 遍历dist文件夹将文件信息存储在fileList中
+##### 遍历dist文件夹将文件信息存储在fileList中
 
-##### fileList子项参数解析
+###### fileList子项参数解析
 | 字段 | 含义 |
 | :--: | :--: |
 | file | 当前文件路径，用于客户端解析判断zip包文件是否缺失，并且通过文件路径获取文件大小内容 |
@@ -64,7 +112,7 @@ walk(filePath)
 writeManifest()
 ```
 
-#### 将fileList写入dist/manifest.json中
+##### 将fileList写入dist/manifest.json中
 `manifest.json`文件作用：客户端读取其内容校验zip包解压出来的文件是否正常
 ``` javascript
 // native/index.js
@@ -92,7 +140,7 @@ function writeManifest() {
 }
 ```
 
-#### 生成manifest-config.json文件，存储基础配置项
+##### 生成manifest-config.json文件，存储基础配置项
 ###### manifest-config.json参数解析
 | 字段 | 含义 |
 | :--: | :--: |
@@ -126,7 +174,7 @@ function writeManifestConfig() {
 }
 ```
 
-#### 将dist进行压缩打包，并将zip包放入dist包中
+##### 将dist进行压缩打包，并将zip包放入dist包中
 ``` javascript
 // native/index.js
 
@@ -166,7 +214,7 @@ function zip() {
 }
 ```
 
-#### 通过zip包内容生成hash存入dist/zip-hash.json 中
+##### 通过zip包内容生成hash存入dist/zip-hash.json 中
 `zip-hash.json`文件作用：客户端每次打开时拉取zip-hash.json， 校验其中的hash值，若不一致，代表前端有发版，需要重新拉取zip包，一致，代表前端无发版，直接使用本地缓存的zip包
 ###### manifest-hash.json参数解析
 | 字段 | 含义 |
@@ -210,7 +258,7 @@ function writeZipHash() {
 ```
 
 
-#### 小结
+##### 小结
 到这里，我们原本的dist包里面按步骤多了四个文件
 * `manifest.json` // 客户端校验zip包文件数量或者文件内容是否有缺失
 * `manifest-config.json` // 客户端需要的一些基础配置项信息
@@ -218,7 +266,7 @@ function writeZipHash() {
 * `zip-hash.json` // 客户端校验zip是否有更新,远程zip包地址
 
 
-##### 运行下面指令生成dist包，并且生成zip包
+###### 运行下面指令生成dist包，并且生成zip包
 ``` javascript
 // 指令可以配置到`.gitlab-ci.yml`下根据环境运行
 yarn build && node native/index dev
@@ -226,7 +274,7 @@ yarn build && node native/index dev
 后续部署前端就完成
 
 
-### 客户端流程
+#### 客户端流程
 ![客户端流程图](http://pushmiddle.bs2dl.yy.com/zip-hash.json.png)
 
 + 每次进入app时加载`zip-hash.json`
@@ -245,7 +293,7 @@ yarn build && node native/index dev
 			    + 有缺少，加载包有问题，移除zip包，访问线上页面
 	  + 相同，资源没更新，使用旧包
 
-#### 小结
+##### 小结
 除了文件完整性校验校验外,url匹配规则
 * 域名匹配得上就加载本地
   * indexRouter匹配得上加载index.html，匹配不上根据路径加载本地资源
