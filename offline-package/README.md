@@ -26,7 +26,7 @@
 ![fast3G网络](https://i.ibb.co/qjMdQs5/fast3G.png)
 
 <!-- https://ibb.co/gz36zFG -->
-* 在fast3G网络下，我们加载页面的`css`和`js`资源需要的时间,大概需要40-50s
+* 在slow3G网络下，我们加载页面的`css`和`js`资源需要的时间,大概需要40-50s
 ![slow3G网络](https://i.ibb.co/4P7JPgc/slow3G.png)
 
 
