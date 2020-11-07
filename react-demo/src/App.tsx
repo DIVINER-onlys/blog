@@ -12,6 +12,7 @@ const App = () => {
     <div className={'App'}>
       <div>
         <div>App</div>
+        <img src={require('src/assets/logo.png')} alt="" />
         <div>
           {testStore.changeUiTest}
           <br />

@@ -3,8 +3,8 @@ import ReactDom from 'react-dom'
 
 import App from './App'
 import 'src/index.less'
-import {ServiceWorker} from 'src/helpers/serviceWorker'
+// import {ServiceWorkerControl} from 'src/helpers/serviceWorker'
 
 ReactDom.render(<App />, document.getElementById('root'))
-
-// ServiceWorker.test()
+console.log('before sw init')
+// ServiceWorkerControl.initServiceWorker('/sw.js')

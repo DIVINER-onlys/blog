@@ -9,7 +9,7 @@ const presets = [
         safari: '11.1',
         ie: '11',
       },
-      useBuiltIns: false, // 根据配置的浏览器兼容，按需添加代码中使用到的api来进行polyfill引入
+      useBuiltIns: 'entry', // usage 根据配置的浏览器兼容，按需添加代码中使用到的api来进行polyfill引入
       corejs: 3,
     },
   ],
@@ -24,8 +24,8 @@ const plugins = [
     //   corejs: 3,
     // },
   ],
-  ['@babel/plugin-proposal-decorators', {"legacy": true}],
-  ['@babel/plugin-proposal-class-properties', { "loose": true }],
+  ['@babel/plugin-proposal-decorators', {legacy: true}],
+  ['@babel/plugin-proposal-class-properties'],
   // [''],
   // [
   //   '@babel/plugin-transform-react-jsx',
