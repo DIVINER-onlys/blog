@@ -9,26 +9,36 @@ const App = () => {
   testStore.useWatch('changeUiTest')
 
   return (
-  <div className={"App"}>
-    <div>
-      <div>App</div>
+    <div className={'App'}>
       <div>
-        {testStore.changeUiTest}
-        <br/>
-        <div className={"btn"}  onClick={() => {testStore.setChangeUiTest(`${testStore.changeUiTest}1`)}}>
-          修改changeUiTest会重新渲染ui
+        <div>App</div>
+        <div>
+          {testStore.changeUiTest}
+          <br />
+          <div
+            className={'btn'}
+            onClick={() => {
+              testStore.setChangeUiTest(`${testStore.changeUiTest}1`)
+            }}
+          >
+            修改changeUiTest会重新渲染ui
+          </div>
         </div>
-      </div>
-      <br/>
-      <div>
-        {testStore.noChangeUiTest}
-        <br/>
-        <div className={"btn"} onClick={() => {testStore.setNoChangeUiTest(`${testStore.noChangeUiTest}1`)}}>
-          修改noChangeUiTest不会重新渲染ui
+        <br />
+        <div>
+          {testStore.noChangeUiTest}
+          <br />
+          <div
+            className={'btn'}
+            onClick={() => {
+              testStore.setNoChangeUiTest(`${testStore.noChangeUiTest}1`)
+            }}
+          >
+            修改noChangeUiTest不会重新渲染ui
+          </div>
         </div>
       </div>
     </div>
-  </div>
   )
 }
 

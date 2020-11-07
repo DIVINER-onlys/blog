@@ -1,6 +1,5 @@
 import PublicMethodClass, {responseWatch} from '../PublicMethodClass'
 
-
 class TestStore extends PublicMethodClass {
   changeUiTest = 'changeUiTest'
   noChangeUiTest = 'noChangeUiTest'

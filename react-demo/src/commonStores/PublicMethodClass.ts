@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from 'react'
 import _ from 'lodash'
 
-
 type watchStackT = {
   name: string | string[]
   setState: React.Dispatch<any>
@@ -17,7 +16,7 @@ export default class PublicMethodClass {
   private watchStacks: watchStackT[] = []
   private responseStacks: responseStackT[] = []
   private stackImmediate: any
-  
+
   public useWatch<T = any>(dataName: string | string[]): T {
     const isFirstRender = useRef(true)
     let data: T = '' as any
@@ -87,7 +86,7 @@ export default class PublicMethodClass {
       }
     })
   }
-  
+
   public unWatch(setState: React.Dispatch<React.SetStateAction<any>>) {
     this.watchStacks = this.watchStacks.filter(stack => stack.setState != setState)
   }
@@ -97,7 +96,7 @@ export const responseWatch = (name: string) => {
   return function (
     target: Record<string, any>,
     propertyName: string,
-    propertyDescriptor: PropertyDescriptor,
+    propertyDescriptor: PropertyDescriptor
   ): PropertyDescriptor {
     const method = propertyDescriptor.value
     propertyDescriptor.value = function (data: any) {
