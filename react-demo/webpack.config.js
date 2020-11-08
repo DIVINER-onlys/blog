@@ -46,10 +46,7 @@ const baseConfig = {
   devServer: {
     port: 8080,
     hot: true,
-    // contentBase: [
-    //   path.join(__dirname, 'public'),
-    //   // path.join(__dirname, 'public2'),
-    // ],
+    contentBase: [path.join(__dirname, 'public')],
     // contentBasePublicPath: path.join(__dirname, 'public'),
     // publicPath: '/',
   },

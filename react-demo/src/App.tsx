@@ -2,6 +2,7 @@ import React from 'react'
 
 import 'src/App.less'
 import {useCommonStore} from './commonStores'
+import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
 
 const App = () => {
   console.log('ss', useCommonStore)
@@ -11,6 +12,27 @@ const App = () => {
   return (
     <div className={'App'}>
       <div>
+        <button
+          onClick={async () => {
+            console.log('发发发')
+            const serviceWorkerMessage: ServiceWorkerMessage = {
+              id: `${Math.random()}`,
+              action: MessageEnum.PageUpdateConfig,
+              data: {
+                levelList: [
+                  {id: 1, test: 'testchange'},
+                  {id: 2, test1: 'test1'},
+                ],
+                originLevelList: [{id: 1, test: 'test'}],
+              },
+              status: MessageStatusEnum.beforeSend,
+            }
+            const res = await ServiceWorkerControl.messageTransfer(serviceWorkerMessage)
+            console.log('啊啊啊', res)
+          }}
+        >
+          发送
+        </button>
         <div>App</div>
         <img src={require('src/assets/logo.png')} alt="" />
         <div>
