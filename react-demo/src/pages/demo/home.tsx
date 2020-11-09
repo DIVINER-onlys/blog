@@ -3,22 +3,19 @@ import {Link} from 'react-router-dom'
 
 import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
-import './index.scss'
-
-// import style from './index.less'
-import style1 from './index.module.scss'
+import style from './index.module.scss'
 
 const Home = () => {
   const {testStore} = useCommonStore()
   testStore.useWatch('changeUiTest')
 
   return (
-    <div className={'home'}>
-      <div className={'logo'}>
+    <div className={style.home}>
+      <div className={style.logo}>
         <img src={require('src/assets/logo.png')} alt="" />
       </div>
 
-      <div className={'serviceWorker'}>
+      <div className={style.serviceWorker}>
         <button
           onClick={async () => {
             const serviceWorkerMessage: ServiceWorkerMessage = {
@@ -45,7 +42,7 @@ const Home = () => {
         {testStore.changeUiTest}
         <br />
         <div
-          className={style1.btntest}
+          className={style.btn}
           onClick={() => {
             testStore.setChangeUiTest(`${testStore.changeUiTest}1`)
           }}
@@ -58,7 +55,7 @@ const Home = () => {
         {testStore.noChangeUiTest}
         <br />
         <div
-          className={'btn'}
+          className={style.btn}
           onClick={() => {
             testStore.setNoChangeUiTest(`${testStore.noChangeUiTest}1`)
           }}
@@ -70,6 +67,9 @@ const Home = () => {
       <br />
       <div>
         <Link to="/about">去about页</Link>
+      </div>
+      <div>
+        <Link to="/404">去404页</Link>
       </div>
     </div>
   )
