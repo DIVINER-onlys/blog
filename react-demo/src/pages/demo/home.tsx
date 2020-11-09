@@ -5,6 +5,9 @@ import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
 import './index.less'
 
+// import style from './index.less'
+import style1 from './index.module.scss'
+
 const Home = () => {
   const {testStore} = useCommonStore()
   testStore.useWatch('changeUiTest')
@@ -42,7 +45,7 @@ const Home = () => {
         {testStore.changeUiTest}
         <br />
         <div
-          className={'btn'}
+          className={style1.btntest}
           onClick={() => {
             testStore.setChangeUiTest(`${testStore.changeUiTest}1`)
           }}

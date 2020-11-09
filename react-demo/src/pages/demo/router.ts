@@ -4,7 +4,7 @@ export default [
   {
     path: '/',
     component: lazy(() => import('src/pages/demo/home')),
-    exact: false,
+    exact: true,
   },
   {
     path: '/about',

@@ -10,9 +10,9 @@ const baseConfig = {
   module: {
     rules: [
       {
-        test: /\.(css|less)$/,
+        test: /\.(css|less|scss)$/,
         exclude: /(node_modules)/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        use: ['style-loader', 'css-loader', 'less-loader', 'sass-loader'],
         exclude: /node_modules/,
       },
       {
@@ -47,6 +47,7 @@ const baseConfig = {
     port: 8080,
     hot: true,
     contentBase: [path.join(__dirname, 'public')],
+    historyApiFallback: true, // 在使用单页面应用的时候，需要设置此参数，代表如果访问除根路径以外的地址，最终都会转向去请求根路径
     // contentBasePublicPath: path.join(__dirname, 'public'),
     // publicPath: '/',
   },
