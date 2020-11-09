@@ -1,6 +1,6 @@
 import React from 'react'
 
-import 'src/App.less'
+import 'src/App.scss'
 import RouterComp from 'src/components/RouterComp'
 
 const App = () => {

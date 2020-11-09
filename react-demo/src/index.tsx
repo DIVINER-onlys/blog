@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDom from 'react-dom'
 
 import App from './App'
-import 'src/index.less'
+import 'src/index.scss'
 import {ServiceWorkerControl} from 'src/helpers/serviceWorker'
 import {useRem} from 'src/hooks/useRem'
 

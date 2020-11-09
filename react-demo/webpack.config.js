@@ -10,9 +10,27 @@ const baseConfig = {
   module: {
     rules: [
       {
-        test: /\.(css|less|scss)$/,
+        test: /\.(css|s[ac]ss)$/,
         exclude: /(node_modules)/,
-        use: ['style-loader', 'css-loader', 'less-loader', 'sass-loader'],
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                auto: true, // 启用css模块
+                // mode: 'local',
+                localIdentName: '[local]__[hash:base64]',
+                // localIdentName: '[path][name]---[local]---[hash:base64:5]',
+              },
+            },
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
         exclude: /node_modules/,
       },
       {

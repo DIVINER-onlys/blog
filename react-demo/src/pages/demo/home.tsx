@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 
 import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
-import './index.less'
+import './index.scss'
 
 // import style from './index.less'
 import style1 from './index.module.scss'

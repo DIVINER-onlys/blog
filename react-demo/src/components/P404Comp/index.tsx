@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 
-import './P404Comp.less'
+import './P404Comp.scss'
 
 const P404Comp = () => (
   <div className={'P404Comp'}>
