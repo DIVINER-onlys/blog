@@ -18,6 +18,7 @@ module.exports = {
       unitPrecision: 5, // 转换为rem后保留的小数点位数
       selectorBlackList: ['ignore_'], // 排除哪些开头的，如ignore_btn 等
       minPixelValue: 2, // 最小转换，低于 2px 不会进行转rem
+      exclude: /index_ignore\.module\.scss/, // 不对匹配上的文件进行转换
     }),
   ],
 }

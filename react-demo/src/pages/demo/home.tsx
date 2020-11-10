@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
 import style from './index.module.scss'
+import ingoreStyle from './index_ignore.module.scss'
 
 const Home = () => {
   const {testStore} = useCommonStore()
@@ -55,7 +56,7 @@ const Home = () => {
         {testStore.noChangeUiTest}
         <br />
         <div
-          className={style.btn}
+          className={`${style.btn} ${ingoreStyle.btn1}`}
           onClick={() => {
             testStore.setNoChangeUiTest(`${testStore.noChangeUiTest}1`)
           }}
