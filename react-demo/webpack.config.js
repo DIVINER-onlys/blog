@@ -28,6 +28,12 @@ const baseConfig = {
             },
           },
           {
+            loader: 'postcss-loader',
+            // options: {
+            //   plugins: loader => [require('postcss-cssnext')(), require('autoprefixer')()],
+            // },
+          },
+          {
             loader: 'sass-loader',
           },
         ],

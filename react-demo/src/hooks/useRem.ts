@@ -1,5 +1,5 @@
 export function useRem() {
-  const baseSize = 16
+  const baseSize = 32
 
   // 设置 rem 函数
   function setRem() {
@@ -7,7 +7,7 @@ export function useRem() {
 
     const clientWidth = document.documentElement.clientWidth
     // 当前页面宽度相对于 750 宽的缩放比例，可根据自己需要修改
-    const scale = Math.min(clientWidth / 375, 2)
+    const scale = Math.min(clientWidth / 750, 1)
     // 设置页面根节点字体大小
     if (clientWidth < 768) {
       document.documentElement.style.fontSize = baseSize * scale + 'px'

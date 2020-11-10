@@ -10,7 +10,7 @@ const Home = () => {
   testStore.useWatch('changeUiTest')
 
   return (
-    <div className={style.home}>
+    <div className={`${style.home} homeGlobal`}>
       <div className={style.logo}>
         <img src={require('src/assets/logo.png')} alt="" />
       </div>
@@ -42,7 +42,7 @@ const Home = () => {
         {testStore.changeUiTest}
         <br />
         <div
-          className={style.btn}
+          className={style.ignore_btn}
           onClick={() => {
             testStore.setChangeUiTest(`${testStore.changeUiTest}1`)
           }}
