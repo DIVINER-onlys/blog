@@ -1,14 +1,19 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {Link} from 'react-router-dom'
 
 import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
 import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
+import eventBus from 'src/helpers/eventBus'
 
 const Home = () => {
   const {testStore} = useCommonStore()
   testStore.useWatch('changeUiTest')
+
+  const test = useCallback((obj: any) => {
+    console.log('常规事件: ', obj)
+  }, [])
 
   return (
     <div className={`${style.home} homeGlobal`}>
@@ -71,6 +76,49 @@ const Home = () => {
       </div>
       <div>
         <Link to="/404">去404页</Link>
+      </div>
+
+      <br />
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            eventBus.on('test', test)
+          }}
+        >
+          eventBus常规事件监听
+        </button>
+        <button
+          onClick={() => {
+            eventBus.emit('test', {test: 1})
+          }}
+        >
+          eventBus常规事件触发
+        </button>
+        <button
+          onClick={() => {
+            eventBus.off('test', test)
+          }}
+        >
+          eventBus常规事件移除
+        </button>
+      </div>
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            eventBus.once('test', test)
+          }}
+        >
+          eventBus一次性事件监听
+        </button>
+        <button
+          onClick={() => {
+            eventBus.emit('test', {test: 1})
+          }}
+        >
+          eventBus一次性事件触发
+        </button>
       </div>
     </div>
   )
