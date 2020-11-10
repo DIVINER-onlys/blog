@@ -5,13 +5,15 @@ import style from './index.module.scss'
 const About = () => {
   const history = useHistory()
   const params: {id: string} = useParams()
+  const Query = new URLSearchParams(window.location.search)
   return (
     <div className={style.about}>
       <div>
         <Link to="/">回到首页</Link>
         <br />
-        <div>{params.id ?? '没传id'}</div>
-        <div></div>
+        <div>路由参数：{params.id ?? '没传id'}</div>
+        <br />
+        <div>url参数: {Query.get('test')}</div>
         <div
           onClick={() => {
             history.push('/')
