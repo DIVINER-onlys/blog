@@ -7,7 +7,7 @@ export default [
     exact: true,
   },
   {
-    path: '/about',
+    path: '/about/:id?',
     component: lazy(() => import('src/pages/demo/about')),
     exact: false,
   },

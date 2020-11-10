@@ -67,7 +67,7 @@ const Home = () => {
 
       <br />
       <div>
-        <Link to="/about">去about页</Link>
+        <Link to="/about/id1">去about页</Link>
       </div>
       <div>
         <Link to="/404">去404页</Link>
