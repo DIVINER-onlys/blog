@@ -6,6 +6,7 @@ import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEn
 import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
+import {debounce, throttle} from 'src/helpers/utils'
 
 const Home = () => {
   const {testStore} = useCommonStore()
@@ -14,6 +15,11 @@ const Home = () => {
   const test = useCallback((obj: any) => {
     console.log('常规事件: ', obj)
   }, [])
+
+  const testDebounce = debounce(test, 500)
+  const testImmediateDebounce = debounce(test, 500, true)
+  const testThrottle = throttle(test, 500)
+  const testImmediateThrottle = throttle(test, 500, true)
 
   return (
     <div className={`${style.home} homeGlobal`}>
@@ -118,6 +124,39 @@ const Home = () => {
           }}
         >
           eventBus一次性事件触发
+        </button>
+      </div>
+      <br />
+      <br />
+
+      <div>
+        <button
+          onClick={() => {
+            testDebounce('后置防抖')
+          }}
+        >
+          后置防抖
+        </button>
+        <button
+          onClick={() => {
+            testImmediateDebounce('前置防抖')
+          }}
+        >
+          前置防抖
+        </button>
+        <button
+          onClick={() => {
+            testThrottle('后置节流')
+          }}
+        >
+          后置防抖
+        </button>
+        <button
+          onClick={() => {
+            testImmediateThrottle('前置节流')
+          }}
+        >
+          前置防抖
         </button>
       </div>
     </div>
