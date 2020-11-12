@@ -6,7 +6,7 @@ import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEn
 import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
-import {debounce, throttle} from 'src/helpers/utils'
+import {debounce, throttle, testMapLimit} from 'src/helpers/utils'
 
 const Home = () => {
   const {testStore} = useCommonStore()
@@ -149,14 +149,30 @@ const Home = () => {
             testThrottle('后置节流')
           }}
         >
-          后置防抖
+          后置节流
         </button>
         <button
           onClick={() => {
             testImmediateThrottle('前置节流')
           }}
         >
-          前置防抖
+          前置节流
+        </button>
+      </div>
+
+      <div>
+        <button
+          onClick={async () => {
+            testMapLimit()
+              .then(res => {
+                console.log('并发后的值', res)
+              })
+              .catch(err => {
+                console.log('并发错误', err)
+              })
+          }}
+        >
+          并发控制
         </button>
       </div>
     </div>
