@@ -51,7 +51,7 @@ class MyPromise {
     if (this.status === REJECTED) {
       onrejected(this.reason)
     }
-    // 处理异步的情况
+    // 处理异步的情况 1
     if (this.status === PENDING) {
       this.onResolvedCallbacks.push(() => {
         onfulfilled(this.value)
