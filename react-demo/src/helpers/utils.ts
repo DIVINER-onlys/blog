@@ -48,6 +48,7 @@ export function throttle(fn: Function, delay: number, immediate = false) {
 
 /**
  * 并发控制
+ * https://github.com/SunshowerC/blog/issues/2
  * @param list 要迭代的数组
  * @param limit 并发数量控制数
  * @param asyncHandle 对 list 的每一项的处理函数，参数为当前处理项，必需 return 一个Promise来确定 是否继续进行迭代

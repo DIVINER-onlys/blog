@@ -7,6 +7,7 @@ import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
 import {debounce, throttle, testMapLimit} from 'src/helpers/utils'
+import MyPromise from 'src/helpers/myPromise'
 
 const Home = () => {
   const {testStore} = useCommonStore()
@@ -173,6 +174,31 @@ const Home = () => {
           }}
         >
           并发控制
+        </button>
+      </div>
+
+      <br />
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            const promise = new MyPromise((resolve: any, reject: any) => {
+              setTimeout(() => {
+                console.log('测试myPromise')
+                resolve('我是传输数据')
+              }, 2000)
+            })
+            promise.then(
+              (res: any) => {
+                console.log('测试MyPromise成功', res)
+              },
+              (err: any) => {
+                console.log('测试MyPromise失败', err)
+              }
+            )
+          }}
+        >
+          测试MyPromise
         </button>
       </div>
     </div>
