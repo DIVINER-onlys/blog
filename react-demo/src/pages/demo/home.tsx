@@ -6,7 +6,7 @@ import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEn
 import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
-import {debounce, throttle, testMapLimit} from 'src/helpers/utils'
+import {debounce, throttle, testMapLimit, curry} from 'src/helpers/utils'
 import MyPromise from 'src/helpers/myPromise'
 
 const Home = () => {
@@ -199,6 +199,23 @@ const Home = () => {
           }}
         >
           测试MyPromise
+        </button>
+      </div>
+
+      <br />
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            function sum(a: number, b: number, c: number) {
+              return a + b + c
+            }
+            const testCurry = curry(sum)
+            console.log(testCurry(1, 2, 3))
+            console.log(testCurry(1)(2, 3))
+          }}
+        >
+          测试柯里化
         </button>
       </div>
     </div>
