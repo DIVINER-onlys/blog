@@ -14,11 +14,11 @@ export function useRem() {
     } else {
       document.documentElement.style.fontSize = baseSize + 'px'
     }
-    if (isIOS) {
-      document.documentElement.style.fontSize = baseSize + 'px'
-      // 兼容 IOS iframe 宽度变大
-      document.documentElement.style.width = '100vw'
-    }
+    // if (isIOS) {
+    //   document.documentElement.style.fontSize = baseSize + 'px'
+    //   // 兼容 IOS iframe 宽度变大
+    //   document.documentElement.style.width = '100vw'
+    // }
   }
 
   // 初始化

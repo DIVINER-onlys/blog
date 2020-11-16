@@ -8,6 +8,7 @@ import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
 import {debounce, throttle, testMapLimit, curry} from 'src/helpers/utils'
 import MyPromise from 'src/helpers/myPromise'
+import CollapsePanel from 'src/components/CollapsePanel'
 
 const Home = () => {
   const {testStore} = useCommonStore()
@@ -217,6 +218,25 @@ const Home = () => {
         >
           测试柯里化
         </button>
+      </div>
+
+      <br />
+      <br />
+      <div style={{width: '100%'}}>
+        <CollapsePanel
+          list={[
+            {
+              data: {payChannel: '父级'},
+              children: [{level: '子级'}],
+            },
+          ]}
+          render={({data, index}) => {
+            return <div>{JSON.stringify(data)}</div>
+          }}
+          subRender={({data, parent, index}) => {
+            return <div>{JSON.stringify(data)}</div>
+          }}
+        ></CollapsePanel>
       </div>
     </div>
   )
