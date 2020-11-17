@@ -1,6 +1,8 @@
 import React, {useCallback} from 'react'
 import {Link} from 'react-router-dom'
+import {observer} from 'mobx-react-lite'
 
+import {useStores} from 'src/stores'
 import {useCommonStore} from 'src/commonStores'
 import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEnum} from 'src/helpers/serviceWorker'
 import style from './index.module.scss'
@@ -11,6 +13,7 @@ import MyPromise from 'src/helpers/myPromise'
 import CollapsePanel from 'src/components/CollapsePanel'
 
 const Home = () => {
+  const {demoStore} = useStores()
   const {testStore} = useCommonStore()
   testStore.useWatch('changeUiTest')
 
@@ -238,8 +241,26 @@ const Home = () => {
           }}
         ></CollapsePanel>
       </div>
+
+      <br />
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            if (demoStore.message.message1) {
+              demoStore.setMessage({message2: 'message2'})
+            } else {
+              demoStore.setMessage({message1: 'message1'})
+            }
+          }}
+        >
+          mobx改变
+        </button>
+        <div>{JSON.stringify(demoStore.message)}</div>
+        <div>{demoStore?.message?.message2}</div>
+      </div>
     </div>
   )
 }
 
-export default Home
+export default observer(Home)
