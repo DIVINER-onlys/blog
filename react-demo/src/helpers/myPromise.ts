@@ -64,3 +64,56 @@ class MyPromise {
 }
 
 export default MyPromise
+
+// 模拟实现一个Promise.finally
+export function SimualationPromiseFinally() {
+  Promise.prototype.finally = function (cb) {
+    cb = typeof cb === 'function' ? cb : function () {}
+    const Fn = this.constructor // 获取当前实例构造函数的引用
+    // 接受状态：返回数据
+    const onFulfilled = function (data: any) {
+      return Fn.resolve(cb?.()).then(() => {
+        return data
+      })
+    }
+
+    // 拒绝状态： 抛出错误
+    const onRejected = function (err: any) {
+      return Fn.resolve(cb?.()).then(() => {
+        throw err
+      })
+    }
+
+    return this.then(onFulfilled, onRejected)
+  }
+
+  /*********************** 测试 ***********************/
+  const p = new Promise((resolve, reject) => {
+    console.info('starting....')
+    setTimeout(() => {
+      Math.random() > 0.5 ? resolve('success') : reject('fail')
+    }, 1000)
+  })
+
+  // 正常顺序测试
+  p.then(data => {
+    console.log(`%c resolve: ${data}`, 'color: green')
+  })
+    .catch(err => {
+      console.log(`%c catch: ${err}`, 'color: red')
+    })
+    .finally(() => {
+      console.info('finally: completed')
+    })
+
+  // finally 前置测试
+  p.finally(() => {
+    console.info('finally: completed')
+  })
+    .then(data => {
+      console.log(`%c resolve: ${data}`, 'color: green')
+    })
+    .catch(err => {
+      console.log(`%c catch: ${err}`, 'color: red')
+    })
+}

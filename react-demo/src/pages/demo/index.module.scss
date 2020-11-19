@@ -44,3 +44,22 @@
   justify-content: center;
   align-items: center;
 }
+
+.ellipsis{
+  margin-top: 20px;
+  // background-color: red;
+  width: 100%;
+  .onlyLine{
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mulLine{
+    width: 200px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+}

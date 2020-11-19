@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {observer} from 'mobx-react-lite'
 
@@ -9,7 +9,7 @@ import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
 import {debounce, throttle, testMapLimit, curry} from 'src/helpers/utils'
-import MyPromise from 'src/helpers/myPromise'
+import MyPromise, {SimualationPromiseFinally} from 'src/helpers/myPromise'
 import CollapsePanel from 'src/components/CollapsePanel'
 
 const Home = () => {
@@ -25,6 +25,23 @@ const Home = () => {
   const testImmediateDebounce = debounce(test, 500, true)
   const testThrottle = throttle(test, 500)
   const testImmediateThrottle = throttle(test, 500, true)
+
+  useEffect(() => {
+    const line = 1 // 显示的行数
+    const str =
+      's这是一段测试文字，this is some test text，测试文字，测试文字测 测试文字，测试文字测 测试文字，测试文字测测试文字，测试文字测'
+    const testEllipsis = document.getElementById('testEllipsis') as HTMLElement
+    for (let i = 0; i < str.length; i++) {
+      testEllipsis.innerHTML = str.substring(0, i)
+      console.log('每次获取高度', testEllipsis?.offsetHeight * line, testEllipsis?.scrollHeight)
+      if ((testEllipsis?.offsetHeight * line || 0) < (testEllipsis?.scrollHeight || 0)) {
+        console.log('超过line行高获取高度', testEllipsis?.scrollHeight)
+        // testEllipsis.style.overflow = 'hidden'
+        testEllipsis.innerHTML = str?.substring(0, i - 3) + '...'
+        break
+      }
+    }
+  })
 
   return (
     <div className={`${style.home} homeGlobal`}>
@@ -258,6 +275,33 @@ const Home = () => {
         </button>
         <div>{JSON.stringify(demoStore.message)}</div>
         <div>{demoStore?.message?.message2}</div>
+      </div>
+
+      <br />
+      <br />
+      <div id="testEllipsis" style={{height: '20px'}}></div>
+      <div className={style.ellipsis}>
+        <div className={style.onlyLine}>啊啊啊啊啊啊啊爱的速递sdsd asdsd sdfsddfdfdfaa aa啊啊啊</div>
+      </div>
+      <div className={style.ellipsis}>
+        <div className={style.mulLine}>啊啊啊啊啊啊啊爱的速递sdsd asdsd sdfsddfdfdfaa aa啊啊啊</div>
+      </div>
+      <br />
+      <br />
+
+      <div>
+        <input
+          type="text"
+          onChange={e => {
+            console.log('随时随地', e, e.target.composing)
+          }}
+        />
+      </div>
+      <br />
+      <br />
+
+      <div>
+        <button onClick={SimualationPromiseFinally}>模拟promise.finally</button>
       </div>
     </div>
   )
