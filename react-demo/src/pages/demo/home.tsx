@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Link} from 'react-router-dom'
 import {observer} from 'mobx-react-lite'
 
@@ -8,8 +8,10 @@ import {ServiceWorkerControl, ServiceWorkerMessage, MessageEnum, MessageStatusEn
 import style from './index.module.scss'
 import ingoreStyle from './index_ignore.module.scss'
 import eventBus from 'src/helpers/eventBus'
-import {debounce, throttle, testMapLimit, curry} from 'src/helpers/utils'
+import {debounce, throttle, testMapLimit, curry, deepCopyBFS, deepCopyDFS, TestProxy} from 'src/helpers/utils'
 import MyPromise, {SimualationPromiseFinally} from 'src/helpers/myPromise'
+import {testGraph} from 'src/helpers/algorithtm/bfs_dfs'
+import {LazyMan} from 'src/helpers/algorithtm/lazyMan'
 import CollapsePanel from 'src/components/CollapsePanel'
 
 const Home = () => {
@@ -302,6 +304,36 @@ const Home = () => {
 
       <div>
         <button onClick={SimualationPromiseFinally}>模拟promise.finally</button>
+      </div>
+
+      <br />
+      <br />
+      <div>
+        <button
+          onClick={() => {
+            testGraph()
+            const a: any = {a: 4}
+            a.loop = a
+            // a.b = 4
+            console.log('bfs深拷贝', deepCopyBFS(a))
+
+            console.log('dfs深拷贝', deepCopyDFS({a: {b: {v: 1}}, c: {f: {e: 2}}, h: new Date()}))
+
+            LazyMan('Tony').eat('lunch').sleep(5).sleepFirst(3).eat('dinner')
+
+            const obj = {a: 2}
+            const t = TestProxy(obj)
+            console.log('原本数据1', obj)
+            console.log(t.a)
+            console.log('原本数据2', obj)
+            t.a = 3
+            obj.a = 4
+            console.log('原本数据3', obj)
+            console.log('数据4', t)
+          }}
+        >
+          aaa
+        </button>
       </div>
     </div>
   )
