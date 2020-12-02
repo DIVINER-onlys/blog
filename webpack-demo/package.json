@@ -1,0 +1,8 @@
+{
+  "name": "webpack-demo",
+  "version": "1.0.0",
+  "description": "webpack",
+  "main": "index.js",
+  "author": "linhaoran",
+  "license": "MIT"
+}
