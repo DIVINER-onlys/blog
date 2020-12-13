@@ -1,0 +1,11 @@
+{
+  "name": "02.webpack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "linhaoran",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack ./src/index.js -o ./dist/ --mode=development",
+    "prod": "webpack ./src/index.js -o ./dist/ --mode=production"
+  }
+}
